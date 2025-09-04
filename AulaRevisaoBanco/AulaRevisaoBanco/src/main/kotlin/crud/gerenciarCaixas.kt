@@ -3,12 +3,14 @@ package org.example.crud
 import entidades.CaixaDAgua
 import enumeradores.Material
 
+val conectar = EntidadeJDBC(
+    url = "jdbc:postgresql://localhost:5432/aula",
+    usuario = "postgres",
+    senha = "postgres"
+)
+
 fun criarTabelaCaixa(){
-    val conectar = EntidadeJDBC(
-        url = "jdbc:postgresql://localhost:5432/aula",
-        usuario = "postgres",
-        senha = "postgres"
-    )
+
     conectar.conectarComBanco()
     /*
     *  val material: Material,
@@ -94,7 +96,8 @@ fun cadastrarCaixa(){
     val marca = readln().toString()
 
 //    Salvar váriaveis agora dentro da classe
-    CaixaDAgua(
+
+    val c = CaixaDAgua(
         material = material,
         capacidade = capacidade,
         cor = cor,
@@ -106,6 +109,24 @@ fun cadastrarCaixa(){
         marca = marca
     )
 
+    val banco = conectar.conectarComBanco()!!.prepareStatement(
+        "INSERT INTO CaixaDAgua" +
+                " (material, capacidade, cor, peso, preco, altura, profundidade, largura, marca)" +
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    )
+        banco.setString(1, c.material.name)
+        banco.setInt(2, c.capacidade!!)
+        banco.setString(3, c.cor)
+        banco.setDouble(4, c.peso)
+        banco.setDouble(5, c.preco)
+        banco.setDouble(6, c.altura)
+        banco.setDouble(7, c.profundidade)
+        banco.setDouble(8, c.largura)
+        banco.setString(9, c.marca)
+
+        banco.executeUpdate()//isso fará commit no banco
+
+        banco.close()//fecha a transação e a conexão com o banco
 }
 
 fun editarCaixa(){
