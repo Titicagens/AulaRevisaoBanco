@@ -3,6 +3,7 @@ package entidades
 import enumeradores.Material
 
 class CaixaDAgua(
+    //val id : Int,
     val material: Material,
     val capacidade: Int,
     val cor: String,
